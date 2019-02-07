@@ -3,9 +3,13 @@
 
 // init project
 var express = require('express');
-var app = express();
 var bodyParser = require('body-parser');
+var app = express();
 app.use(bodyParser.json())
+
+//used for easy parsing of the user agent
+var useragent = require('express-useragent');
+app.use(useragent.express())
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -31,11 +35,11 @@ var api = '/api/whoami'
 
 app.get(api,(req,res,next)=> {  
   var language = req.acceptsLanguages();
-  var software = req.get('User Agent');
-  //req.headers['user-agent']
+  var software = `OS: ${req.useragent.os}, Browser: ${req.useragent.browser}`;
+  //req.headers['user-agent'] different way of getting data with same result
   var ipaddress = req.ip
   
-  res.json({'ipaddress': ipaddress, 'language':language[0] })
+  res.json({'ipaddress': ipaddress, 'language':language[0], 'software': software })
 })
 
 
